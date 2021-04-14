@@ -1,10 +1,14 @@
 package com.example.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.example.hellospring.vo.RequestVo;
 
 //파라메터 관련 내용 정리
 @Controller
@@ -37,4 +41,30 @@ public class WelcomeController {
 
 		return mav;
 	}
+	
+	//요청 파라메타를 객체에 담아서 전달
+	@RequestMapping("/using-vo")
+	public ModelAndView using(@ModelAttribute RequestVo vo) {
+		ModelAndView mav =new ModelAndView();
+		mav.addObject("message","name:"+vo.getName()+", no:"+vo.getNo());
+		mav.setViewName("/WEB-INF/views/hello.jsp");
+		
+		return mav;
+	}
+	//return type이 String 이면 ViewName 전달
+	@RequestMapping("/rstr")
+	public String returnString() {
+		return "/WEB-INF/views/hello.jsp";
+	}
+	//ModelAndView를 사용하지 않고 String을 리턴하지만
+	//Model을 사용해야 할  경우
+	//메서드 인자값으로 Model을 받아올 수 있고 -> 사용할수 있다
+	@RequestMapping("/rstr2")
+	public String returnString2(ModelMap map) {
+		//필요한 객체를 메서드 인자로 요청하면  Spring이 필요 객체를 전달해준다
+		//예) HttpRequest,HttpResponse,HttpSession등
+		map.addAttribute("message","모델 데이터");
+		return "/WEB-INF/views/hello.jsp";
+	}
+	
 }
